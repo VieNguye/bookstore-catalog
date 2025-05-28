@@ -32,10 +32,10 @@ jobs:
         push: true
         tags: ${{ secrets.DOCKERHUB_USERNAME }}/catalog-service:latest
     
-    - name: Set up Kubeconfig
-      uses: azure/setup-kubectl@v3
-      with:
-        version: latest
+    - name: Setup kubeconfig
+      run: |
+        mkdir -p $HOME/.kube
+        echo "${{ secrets.KUBECONFIG_DATA }}" > $HOME/.kube/config
 
     - name: Deploy to Kubernetes
       run: |
