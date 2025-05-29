@@ -25,16 +25,12 @@ jobs:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
-    - name: Check Docker tag format
-      run: | 
-        echo "Tag: ${{ secrets.DOCKERHUB_USERNAME }}/catalog-service:latest"
-  
     - name: Build and Push Docker image
       uses: docker/build-push-action@v5
       with:
         context: .
         push: true
-        tags: ${{ secrets.DOCKERHUB_USERNAME }}/catalog-service:0.1
+        tags: ${{ secrets.DOCKERHUB_USERNAME }}/catalog-service:latest
     
     - name: Setup kubeconfig
       run: |
