@@ -1,115 +1,133 @@
-# 🛒 Shopping Cart Service
+# 📚 Bookstore Microservices Project
 
-A microservice for displaying selected book details in a shopping cart view, built with **Node.js**, **Express**, **EJS**, and **Bootstrap**. Designed to integrate with the `catalog-service` in a cloud-native bookstore application.
+A cloud-native bookstore web app built with a microservices architecture. The system includes two services:
 
----
+- `catalog-service`: Displays a list of available books with a beautiful UI and a "Buy Now" button.
+- `shopping-cart-service`: Shows the selected book in a shopping cart view after clicking "Buy Now".
 
-## 📦 Features
-
-- Accepts book info via query parameters (`title`, `author`, `price`)
-- Displays book details in a styled cart interface
-- Lightweight and container-ready (Docker)
-- Fully deployable to Kubernetes (e.g., Azure AKS)
+Both services are containerized, integrated via HTTP, and fully deployable to Kubernetes with CI/CD automation using GitHub Actions.
 
 ---
 
-## 🧾 Requirements
+## 🔧 Technologies Used
 
-- Node.js 18+
-- npm
-- Docker (optional)
-- Kubernetes (optional for production)
+- **Node.js**, **Express**, **EJS**, **Bootstrap**
+- **Docker** & **Docker Hub**
+- **GitHub Actions** (CI/CD pipelines)
+- **Kubernetes (AKS)** for container orchestration
+- **Terraform** (for AKS provisioning)
 
 ---
 
-## 🚀 Getting Started
-
-### 1. Clone the Repo
-
-```bash
-git clone https://github.com/yourusername/shopping-cart-service.git
-cd shopping-cart-service
-```
-
-### 2. Install Dependencies
-
-```bash
-npm install
-```
-
-### 3. Run Locally
-
-```bash
-npm start
-```
-
-Open in browser:
+## 🧱 Project Structure
 
 ```
-http://localhost:4000/cart?title=Clean+Code&author=Robert+C.+Martin&price=$34.99
+bookstore-app/
+├── catalog-service/
+│   ├── app.js
+│   ├── views/index.ejs
+│   ├── Dockerfile
+│   └── ...
+├── shopping-cart-service/
+│   ├── app.js
+│   ├── views/cart.ejs
+│   ├── Dockerfile
+│   └── ...
+├── k8s/
+│   ├── catalog-deployment.yaml
+│   ├── cart-deployment.yaml
+└── .github/workflows/ci-cd.yml
 ```
 
 ---
 
-## 🖥️ Project Structure
+## 📘 catalog-service
 
+### Features
+- Displays a list of books
+- Uses Bootstrap for UI
+- "Buy Now" links to shopping cart service
+- Built with Express + EJS
+- Dockerized and deployed on AKS
+
+### Sample Route
 ```
-shopping-cart-service/
-├── app.js              # Express server
-├── views/
-│   └── cart.ejs        # EJS template for cart page
-├── public/
-│   └── style.css       # Custom CSS
-├── Dockerfile          # Docker container definition
-├── package.json        # Project metadata and scripts
-└── README.md           # This file
-```
-
----
-
-## 🐳 Docker
-
-Build and run:
-
-```bash
-docker build -t shopping-cart-service .
-docker run -p 4000:4000 shopping-cart-service
+GET /
+GET /catalog
 ```
 
----
-
-## ⚙️ Kubernetes (Optional)
-
-To deploy to AKS or any Kubernetes cluster:
-
-1. Create a `Deployment` and `Service` YAML file.
-2. Expose using `LoadBalancer` or Ingress.
-3. Connect `catalog-service` to this service via DNS or public IP.
-
----
-
-## 🔗 Integration with Catalog Service
-
-The catalog service should link to this app like:
-
+### Example Buy Now Link
 ```html
-<a href="http://<shopping-cart-service-host>:4000/cart?title=<%= book.title %>&author=<%= book.author %>&price=<%= book.price %>">
+<a href="http://<shopping-cart-host>:4000/cart?title=<%= book.title %>&author=<%= book.author %>&price=<%= book.price %>">
   Buy Now
 </a>
 ```
 
 ---
 
-## 🧠 Tech Stack
+## 🛒 shopping-cart-service
 
-- **Express.js** – Web server
-- **EJS** – Templating engine
-- **Bootstrap 5** – UI styling
-- **Docker** – Containerization
-- **Kubernetes** – Orchestration (optional)
+### Features
+- Accepts book info via query params
+- Renders book details in a cart view
+- Built with Express + EJS
+- Styled with Bootstrap
+- Dockerized and deployable to AKS
+
+### Sample Route
+```
+GET /cart?title=...&author=...&price=...
+```
 
 ---
 
-## 📄 License
+## 🚀 Run Locally
+
+### catalog-service
+```bash
+cd catalog-service
+npm install
+npm start
+```
+
+### shopping-cart-service
+```bash
+cd shopping-cart-service
+npm install
+npm start
+```
+
+---
+
+## 🐳 Docker
+
+### Build and run catalog-service
+```bash
+docker build -t catalog-service ./catalog-service
+docker run -p 3000:3000 catalog-service
+```
+
+### Build and run shopping-cart-service
+```bash
+docker build -t shopping-cart-service ./shopping-cart-service
+docker run -p 4000:4000 shopping-cart-service
+```
+
+---
+
+## ⚙️ Kubernetes
+
+Both services include `deployment.yaml` and `service.yaml` manifests and can be deployed to AKS.
+
+---
+
+## 🤖 CI/CD with GitHub Actions
+
+- Automatically builds and pushes Docker images for both services.
+- Deploys updated images to AKS using `kubectl`.
+
+---
+
+## 📎 License
 
 MIT — free to use, share, and modify.
