@@ -25,13 +25,22 @@ jobs:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
-    - name: Build and Push Docker image
+    - name: Build and Push catalog-service Docker Image
       uses: docker/build-push-action@v5
       with:
-        context: .
+        context: ./catalog-service
+        file: ./catalog-service/Dockerfile
         push: true
-        tags: ${{ secrets.DOCKERHUB_USERNAME }}/catalog-service:0.1
-    
+        tags: ${{ secrets.DOCKERHUB_USERNAME }}/catalog-service:0.2
+
+    - name: Build and Push shopping-cart-service Docker Image
+      uses: docker/build-push-action@v5
+      with:
+        context: ./shopping-cart-service
+        file: ./shopping-cart-service/Dockerfile
+        push: true
+        tags: ${{ secrets.DOCKERHUB_USERNAME }}/shopping-cart-service:0.1
+
     - name: Setup kubeconfig
       run: |
         mkdir -p $HOME/.kube
