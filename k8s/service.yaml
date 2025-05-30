@@ -10,3 +10,13 @@ spec:
       port: 80
       targetPort: 3000
   type: LoadBalancer
+  
+  name: shopping-cart-service
+spec:
+  selector:
+    app: shopping-cart
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 4000
+  type: LoadBalancer

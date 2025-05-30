@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shopping-cart-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: shopping-cart
+  template:
+    metadata:
+      labels:
+        app: shopping-cart
+    spec:
+      containers:
+        - name: shopping-cart
+          image: viennnguyen1301/shopping-cart-service:latest
+          ports:
+            - containerPort: 4000
