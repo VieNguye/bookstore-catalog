@@ -11,47 +11,80 @@ on:
 
 jobs:
 
-  # Build Stage
   build:
+    name: 🔨 Build Docker Images
     runs-on: ubuntu-latest
+
     steps:
     - name: Checkout Code
       uses: actions/checkout@v3
-    
+
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
 
-    - name: Log in to Dockerhub
+    - name: Log in to Docker Hub
       uses: docker/login-action@v3
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_PASSWORD }}
-  # Test Stage      
+
+    - name: Build catalog-service Docker Image (no push)
+      uses: docker/build-push-action@v5
+      with:
+        context: ./catalog-service
+        file: ./catalog-service/Dockerfile
+        push: false
+        tags: catalog-service:test
+
+    - name: Build shopping-cart-service Docker Image (no push)
+      uses: docker/build-push-action@v5
+      with:
+        context: ./shopping-cart-service
+        file: ./shopping-cart-service/Dockerfile
+        push: false
+        tags: shopping-cart-service:test
+
   test:
+    name: ✅ Test Docker Images
     runs-on: ubuntu-latest
     needs: build
+
     steps:
-    - name: Build and Push catalog-service Docker Image
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Run Tests (placeholder)
+      run: echo "🧪 Add your integration/unit tests here"
+
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+    - name: Build & Push catalog-service
       uses: docker/build-push-action@v5
       with:
         context: ./catalog-service
         file: ./catalog-service/Dockerfile
         push: true
-        tags: ${{ secrets.DOCKERHUB_USERNAME }}/catalog-service:0.2
+        tags: ${{ secrets.DOCKERHUB_USERNAME }}/catalog-service:latest
 
-    - name: Build and Push shopping-cart-service Docker Image
+    - name: Build & Push shopping-cart-service
       uses: docker/build-push-action@v5
       with:
         context: ./shopping-cart-service
         file: ./shopping-cart-service/Dockerfile
         push: true
-        tags: ${{ secrets.DOCKERHUB_USERNAME }}/shopping-cart-service:0.1
-  #Deploy Stage
+        tags: ${{ secrets.DOCKERHUB_USERNAME }}/shopping-cart-service:latest
+
   deploy:
+    name: 🚀 Deploy to Kubernetes
     runs-on: ubuntu-latest
     needs: test
+
     steps:
-    - name: Setup kubeconfig
+    - name: Set up kubeconfig
       run: |
         mkdir -p $HOME/.kube
         echo "${{ secrets.KUBECONFIG_DATA }}" > $HOME/.kube/config
