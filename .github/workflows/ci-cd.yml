@@ -11,10 +11,9 @@ on:
 
 jobs:
 
+  # Build Stage
   build:
-
     runs-on: ubuntu-latest
-
     steps:
     - name: Checkout Code
       uses: actions/checkout@v3
@@ -27,10 +26,10 @@ jobs:
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_PASSWORD }}
+  # Test Stage      
   test:
-
     runs-on: ubuntu-latest
-
+    needs: build
     steps:
     - name: Build and Push catalog-service Docker Image
       uses: docker/build-push-action@v5
@@ -47,10 +46,10 @@ jobs:
         file: ./shopping-cart-service/Dockerfile
         push: true
         tags: ${{ secrets.DOCKERHUB_USERNAME }}/shopping-cart-service:0.1
+  #Deploy Stage
   deploy:
-
     runs-on: ubuntu-latest
-
+    needs: test
     steps:
     - name: Setup kubeconfig
       run: |
